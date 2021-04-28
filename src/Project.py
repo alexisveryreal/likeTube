@@ -167,12 +167,16 @@ score = metrics.r2_score(ytest, pred)
 print("Accuracy is %.2f" % score)
 
 xdum = xtest['std_views']
+#xdum = xtest['std_category_id']
 xdum2 = xtrain['std_views']
+#for i in xdum:
+#    xdum[i] = 1
 
 plt.figure(figsize=(4, 3))
 ax = plt.axes()
-ax.scatter(xdum2, ytrain)
-#ax.plot(xdum, pred)
+ax.scatter(xdum2, ytrain, color='black')
+ax.plot(xdum, pred)
+#ax.plot(pred)
 
 ax.set_xlabel('x')
 ax.set_ylabel('y')
