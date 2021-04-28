@@ -160,8 +160,11 @@ pred = regREST.predict(xtest) # predicting likes
     # -> eval_regression(regRest, pred, xtrain, ytain, xtest, ytest)
 kf = KFold(n_splits= 10)
 print("Performing KFold validation")
+i = 0
 for train, test in kf.split(x):
-    print("%s %s" % (xtrain, ytest))
+    print(i, "...")
+    i = i + 1
+    #print("%s %s" % (xtrain, ytest))
 
 score = metrics.r2_score(ytest, pred)
 print("Accuracy is %.2f" % score)
