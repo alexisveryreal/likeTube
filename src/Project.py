@@ -6,8 +6,15 @@ import matplotlib.pyplot as plt
 from sklearn import preprocessing
 from sklearn import model_selection
 from sklearn import linear_model
+from sklearn import metrics
 
-data = pd.read_csv('USvideos.csv')
+filename = 'USvideos.csv'
+try:
+    print("Reading input file %s ..." % filename)
+    data = pd.read_csv(filename)
+except:
+    print("Error reading %s" % filename)
+    exit(1)
 data.head()
 
 print('There are', str(len(data)), 'rows in this dataset')
@@ -124,24 +131,25 @@ print(preNorm.head())
 
 # Split train and split here
 
-    # make x = all the std_ values that show up in preNorm.head
-    # so x = preNorm[['std_likes', 'etc']]
-    # i forgot if we wanted to do just views or we can do the rest 
+# make y be the std_likes   #can this be 2 vars, likes/dislikes? Or would views be a better metric? (engagement is more important than approval these days)
+y = preNorm['std_likes']
 
-    # make y be the std_likes
-    # y = preNorm['std_likes']
+# make x = the remaining std_values in preNorm
+x = preNorm[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
     
-    # use sklearns model_selection.train_test_split (cookie for short) to split them up nicely
-    # not sure what we could use for testsize and random state
-    # xtrain, xtest, yrain, ytest = cookie(x,y,test_size=?, random_state=?)
+# use sklearns model_selection.train_test_split (cookie for short) to split them up nicely  
+# currently using explicit defaults for test_size and random_state(seed)
+xtrain, xtest, ytrain, ytest = model_selection.train_test_split(x,y,test_size=0.25, random_state=None)
 
 # Linear regression
-    # we can just use sklearns linear_model.LinearRegression
-    # regREST = LinearRegression()
-    # regREST.fit(xtrain, ytrain)
+print()
+print("Performing Linear Regression")
+regREST = linear_model.LinearRegression()
+regREST.fit(xtrain, ytrain)
 
 # Prediction
-    # pred = regREST.predict(xtest) # predicting likes
+print("Performing Prediction")
+pred = regREST.predict(xtest) # predicting likes
     
 
 # evaluate
@@ -149,3 +157,5 @@ print(preNorm.head())
     # we can use kfold or whatever we want 
     # the easy way is to just use eval_regression
     # -> eval_regression(regRest, pred, xtrain, ytain, xtest, ytest)
+score = metrics.r2_score(ytest,pred)
+print("Accuracy is %.2f" % score)

@@ -18,7 +18,7 @@ A work in progress, machine learning model that predicts video likes based on th
 * **Alexis Villarreal** - [alexisveryreal](https://github.com/alexisveryreal)
 * **Ralph Benjamin Libao** - 
 * **Devon Erb** -
-* **Nicholaus Bloom** - 
+* **Nicholaus Bloom** - [LintorZ](https://github.com/Lintorz)
 
 ## License
 
