@@ -9,6 +9,7 @@ from sklearn import linear_model
 from sklearn import metrics
 from sklearn.model_selection import KFold
 from sklearn.model_selection import LeaveOneOut
+from mpl_toolkits.mplot3d import Axes3D
 
 filename = 'USvideos.csv'
 try:
@@ -138,7 +139,8 @@ y = preNorm['std_likes']
 
 # make x = the remaining std_values in preNorm
 x = preNorm[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
-    
+#x = preNorm['std_views']
+
 # use sklearns model_selection.train_test_split (cookie for short) to split them up nicely  
 # currently using explicit defaults for test_size and random_state(seed)
 xtrain, xtest, ytrain, ytest = model_selection.train_test_split(x,y,test_size=0.25, random_state=None)
@@ -169,7 +171,8 @@ for train, test in kf.split(x):
 score = metrics.r2_score(ytest, pred)
 print("Accuracy is %.2f" % score)
 
-#dummy this part out in case we don't want a second test, it's finnicky and has a few videos that did not trend
+###################################################
+# dummy this part out in case we don't want a second test, it's finnicky and has a few videos that did not trend
 file2 = 'scraped_data_manual.csv'
 try:
     print("Reading input file %s ..." % file2)
@@ -186,24 +189,22 @@ y2 = test2['std_likes']
 x2 = test2[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
 xtrain2, xtest2, ytrain2, ytest2 = model_selection.train_test_split(x2,y2,test_size=0.25, random_state=None)
 
-
 print("Testing random videos...")
 pred2 = regREST.predict(xtest2)
 score2 = metrics.r2_score(ytest2, pred2)
 print("Accuracy is %.2f" % score2)
-#testing 2 ends here
+
+# testing 2 ends here
+#####################################
 
 xdum = xtest['std_views']
-#xdum = xtest['std_category_id']
 xdum2 = xtrain['std_views']
-#for i in xdum:
-#    xdum[i] = 1
 
 plt.figure(figsize=(4, 3))
 ax = plt.axes()
 ax.scatter(xdum2, ytrain, color='black')
 ax.plot(xdum, pred)
-#ax.plot(pred)
+#ax.plot(pred, xdum)
 
 ax.set_xlabel('x')
 ax.set_ylabel('y')
