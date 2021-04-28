@@ -166,6 +166,30 @@ for train, test in kf.split(x):
 score = metrics.r2_score(ytest, pred)
 print("Accuracy is %.2f" % score)
 
+#dummy this part out in case we don't want a second test, it's finnicky and has a few videos that did not trend
+file2 = 'scraped_data_manual.csv'
+try:
+    print("Reading input file %s ..." % file2)
+    data2 = pd.read_csv(file2)
+except:
+    print("Error reading %s" % file2)
+    exit(1)
+
+test2 = data2
+for var in finalFeatures:
+    test2['std_'+var] = preprocessing.MinMaxScaler().fit_transform(test2[var].values.reshape(len(test2), 1))
+
+y2 = test2['std_likes']
+x2 = test2[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
+xtrain2, xtest2, ytrain2, ytest2 = model_selection.train_test_split(x2,y2,test_size=0.25, random_state=None)
+
+
+print("Testing random videos...")
+pred2 = regREST.predict(xtest2)
+score2 = metrics.r2_score(ytest2, pred2)
+print("Accuracy is %.2f" % score2)
+#testing 2 ends here
+
 xdum = xtest['std_views']
 #xdum = xtest['std_category_id']
 xdum2 = xtrain['std_views']
