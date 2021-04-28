@@ -7,6 +7,8 @@ from sklearn import preprocessing
 from sklearn import model_selection
 from sklearn import linear_model
 from sklearn import metrics
+from sklearn.model_selection import KFold
+from sklearn.model_selection import LeaveOneOut
 
 filename = 'USvideos.csv'
 try:
@@ -150,12 +152,30 @@ regREST.fit(xtrain, ytrain)
 # Prediction
 print("Performing Prediction")
 pred = regREST.predict(xtest) # predicting likes
-    
 
 # evaluate
     # evaluate here
     # we can use kfold or whatever we want 
     # the easy way is to just use eval_regression
     # -> eval_regression(regRest, pred, xtrain, ytain, xtest, ytest)
-score = metrics.r2_score(ytest,pred)
+kf = KFold(n_splits= 10)
+print("Performing KFold validation")
+for train, test in kf.split(x):
+    print("%s %s" % (xtrain, ytest))
+
+score = metrics.r2_score(ytest, pred)
 print("Accuracy is %.2f" % score)
+
+xdum = xtest['std_views']
+xdum2 = xtrain['std_views']
+
+plt.figure(figsize=(4, 3))
+ax = plt.axes()
+ax.scatter(xdum2, ytrain)
+#ax.plot(xdum, pred)
+
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+ax.axis('tight')
+plt.show()
