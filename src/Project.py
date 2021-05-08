@@ -212,6 +212,8 @@ x2 = test2[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
 xtrain2, xtest2, ytrain2, ytest2 = model_selection.train_test_split(x2,y2,test_size=0.25, random_state=None)
 
 print("Testing random videos...")
+testReg = linear_model.LinearRegression()
+testReg = testReg.fit(xtrain2, ytrain2)
 pred2 = regREST.predict(xtest2)
 score2 = metrics.r2_score(ytest2, pred2)
 # again not accuracy ;-;
