@@ -181,6 +181,26 @@ pred = regREST.predict(xtest) # predicting likes
     # we can use kfold or whatever we want 
     # the easy way is to just use eval_regression
     # -> eval_regression(regRest, pred, xtrain, ytain, xtest, ytest)
+    
+
+
+# upadted CV score
+# prints out 10 scores, then gets the mean
+score = model_selection.cross_val_score(regREST, xtrain, ytrain, cv=10)
+print("scores", score)
+print("mean: ", score.mean())
+
+
+
+
+
+
+
+
+
+
+
+# this don't do anything tho lol, it just just prints numbers ;--;
 kf = KFold(n_splits= 10)
 print("Performing KFold validation")
 i = 0
