@@ -7,6 +7,7 @@ from sklearn import preprocessing
 from sklearn import model_selection
 from sklearn import linear_model
 from sklearn import metrics
+from sklearn import tree
 from sklearn.model_selection import KFold
 from sklearn.model_selection import LeaveOneOut
 from mpl_toolkits.mplot3d import Axes3D
@@ -145,6 +146,26 @@ x = preNorm[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']
 # currently using explicit defaults for test_size and random_state(seed)
 xtrain, xtest, ytrain, ytest = model_selection.train_test_split(x,y,test_size=0.25, random_state=None)
 
+
+# Decision tree model
+
+deTree = tree.DecisionTreeRegressor()
+deTree.fit(xtrain, ytrain)
+dePred = deTree.predict(xtest)
+evalTree = metrics.r2_score(ytest, dePred)
+print("Decision Tree R2 score: %.2f" % evalTree)
+print("Decistion Tree model score: ", str(round(evalTree, 2) * 100), "%")
+
+print("dTree train accuracy: ", str(round(deTree.score(xtrain, ytrain),2)*100), '%')
+print("dTree test accuracy: ", str(round(deTree.score(xtest, ytest),2)*100), '%')
+
+# do percent error acc here
+# ((Actual Likes-Predicted Likes)/Actual Likes) * 100 
+
+
+
+
+
 # Linear regression
 print()
 print("Performing Linear Regression")
@@ -169,6 +190,7 @@ for train, test in kf.split(x):
     #print("%s %s" % (xtrain, ytest))
 
 score = metrics.r2_score(ytest, pred)
+# this isn't accuracy lol
 print("Accuracy is %.2f" % score)
 
 ###################################################
@@ -192,7 +214,8 @@ xtrain2, xtest2, ytrain2, ytest2 = model_selection.train_test_split(x2,y2,test_s
 print("Testing random videos...")
 pred2 = regREST.predict(xtest2)
 score2 = metrics.r2_score(ytest2, pred2)
-print("Accuracy is %.2f" % score2)
+# again not accuracy ;-;
+print("score is %.2f" % score2)
 
 # testing 2 ends here
 #####################################
