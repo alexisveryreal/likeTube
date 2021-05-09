@@ -248,11 +248,36 @@ xdum2 = xtrain['std_views']
 plt.figure(figsize=(4, 3))
 ax = plt.axes()
 ax.scatter(xdum2, ytrain, color='black')
-ax.plot(xdum, pred)
-#ax.plot(pred, xdum)
-
+plt.suptitle('Training Data\'s Likes')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 
 ax.axis('tight')
 plt.show()
+
+plt.figure(figsize=(4, 3))
+ax = plt.axes()
+ax.scatter(xdum, pred, color='blue')
+plt.suptitle('Predicted Likes')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+ax.axis('tight')
+plt.show()
+
+print("Score compares overall predicted to actual likes")
+
+plt.figure(figsize=(4, 3))
+ax = plt.axes()
+ax.scatter(xdum2, ytrain, color='black')
+ax.scatter(xdum, pred, color='blue')
+plt.suptitle('Compared')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+ax.axis('tight')
+plt.show()
+
+
+#ax.plot(pred, xdum)
+
