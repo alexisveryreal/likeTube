@@ -8,6 +8,7 @@ from sklearn import model_selection
 from sklearn import linear_model
 from sklearn import metrics
 from sklearn import tree
+from prettytable import PrettyTable
 from sklearn.model_selection import KFold
 from sklearn.model_selection import LeaveOneOut
 from mpl_toolkits.mplot3d import Axes3D
@@ -25,6 +26,7 @@ print('There are', str(len(data)), 'rows in this dataset')
 print('\n')
 
 # prints out the data information
+print("All features: ")
 data.info()
 
 
@@ -41,9 +43,13 @@ numerical = ['comment_count', 'dislikes', 'views', 'likes', 'category_id']
 # for numerical it shows us the count, mean, standard deviation, min, etc.
 
 # printing both for the categorical and the numerical
-
+print()
+print("Categorical data print: ")
 print(data[categorical].describe())
+print()
 
+
+print("Numerical data print: ")
 print(data[numerical].describe())
 print()
 
@@ -56,7 +62,7 @@ print()
 
 numerics = ['int8', 'int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
-print(data.select_dtypes(include=numerics).columns)
+# print(data.select_dtypes(include=numerics).columns)
 # print(data.select_dtypes(include=numerics).shape)
 
 # make the numeric data anything that falls under the array above 
@@ -93,6 +99,7 @@ uniqueCategoryData.columns = ['Features', 'Unique Values']
 
 uniqueCategoryData = uniqueCategoryData.sort_values('Unique Values', ascending=False)
 
+print("Unique values in category data: ")
 print(uniqueCategoryData)
 
 print()
@@ -102,20 +109,22 @@ print()
 # we are just going to assume they don't belong round these parts , YEEEHAW
 
 dropData = data.drop(['description', 'title', 'thumbnail_link', 'video_id', 'publish_time', 'tags', 'channel_title', 'trending_date'], axis=1)
-
+print("Data now that we dropped features: ")
 print(dropData)
 
 
 #  Dupe values
 # make sure there isnt any duplicate values
+print("Number of duplicate data: ")
 print(dropData.duplicated().sum()) # results in 48 duplicates smh
 
+print("Dropping duplicates...")
 # drop them duplicates
 dropData = dropData.drop_duplicates()
-print()
+print("Checking for duplicates again, should be 0...")
 # print again to be sure they are 0
 print(dropData.duplicated().sum())
-
+print()
 # final features -----
 
 finalFeatures = ['category_id', 'views', 'likes', 'dislikes', 'comment_count']
@@ -128,9 +137,14 @@ for var in finalFeatures:
     preNorm['std_'+var] = preprocessing.MinMaxScaler().fit_transform(preNorm[var].values.reshape(len(preNorm), 1))
     
 # print both out to see comparisons between not and normalized
+print("non-normalized data: ")
 print(dropData.describe())
 print()
+print("Normalized data: ")
 print(preNorm.head())
+
+print()
+print("Data preparation done, starting...")
 # --------------------------------------------------
 
 # Split train and split here
@@ -140,33 +154,50 @@ y = preNorm['std_likes']
 
 # make x = the remaining std_values in preNorm
 x = preNorm[['std_category_id', 'std_views','std_dislikes', 'std_comment_count']]
-#x = preNorm['std_views']
 
-# use sklearns model_selection.train_test_split (cookie for short) to split them up nicely  
+
+# use sklearns model_selection.train_test_split to split them up nicely  
 # currently using explicit defaults for test_size and random_state(seed)
 xtrain, xtest, ytrain, ytest = model_selection.train_test_split(x,y,test_size=0.25, random_state=None)
 
 
-# Decision tree model
+# Decision tree model ----------------------------------------------------------------------------
+print()
+print("Performing Decision Tree...")
 
 deTree = tree.DecisionTreeRegressor()
 deTree.fit(xtrain, ytrain)
+
+print("Performing Prediction...")
 dePred = deTree.predict(xtest)
 evalTree = metrics.r2_score(ytest, dePred)
+
+treeScore = model_selection.cross_val_score(deTree, xtrain, ytrain, cv=10)
+print("Performing CV with Decision Tree")
+print("Printing results...")
+
+treeCV = PrettyTable()
+treeCV.field_names = ['Exp#', 'Decision Tree Score']
+
+i = 0
+for x in treeScore:
+    treeCV.add_row([i, x])
+    i += 1
+
+print()
+print(treeCV)
+print("Mean CVscore: ", treeScore.mean())
+
+
 print("Decision Tree R2 score: %.2f" % evalTree)
 print("Decistion Tree model score: ", str(round(evalTree, 2) * 100), "%")
 
 print("dTree train accuracy: ", str(round(deTree.score(xtrain, ytrain),2)*100), '%')
 print("dTree test accuracy: ", str(round(deTree.score(xtest, ytest),2)*100), '%')
-
-# do percent error acc here
-# ((Actual Likes-Predicted Likes)/Actual Likes) * 100 
+# --------------------------------------------------------------------------------------------------
 
 
-
-
-
-# Linear regression
+# Linear regression -----------------------------------------------------------------
 print()
 print("Performing Linear Regression")
 regREST = linear_model.LinearRegression()
@@ -176,42 +207,35 @@ regREST.fit(xtrain, ytrain)
 print("Performing Prediction")
 pred = regREST.predict(xtest) # predicting likes
 
-# evaluate
-    # evaluate here
-    # we can use kfold or whatever we want 
-    # the easy way is to just use eval_regression
-    # -> eval_regression(regRest, pred, xtrain, ytain, xtest, ytest)
-    
+# Performing Cross Validation
+cvTable = PrettyTable()
+cvTable.field_names = ['Exp#', 'Linear Regression Score']
 
+print("Performing CV with Linear Regression")
 
-# upadted CV score
+# CV score
 # prints out 10 scores, then gets the mean
 score = model_selection.cross_val_score(regREST, xtrain, ytrain, cv=10)
-print("scores", score)
-print("mean: ", score.mean())
 
+print("Printing results...")
 
-
-
-
-
-
-
-
-
-
-# this don't do anything tho lol, it just just prints numbers ;--;
-kf = KFold(n_splits= 10)
-print("Performing KFold validation")
 i = 0
-for train, test in kf.split(x):
-    print(i, "...")
-    i = i + 1
-    #print("%s %s" % (xtrain, ytest))
+for x in score:
+    cvTable.add_row([i, x])
+    i += 1
 
+print()
+print(cvTable)
+print("Mean score: ", score.mean())
+# printing out r2 score 
 score = metrics.r2_score(ytest, pred)
-# this isn't accuracy lol
-print("Accuracy is %.2f" % score)
+print("Kaggle dataset LinearRegression R2 Score is: %.2f" % score)
+print("LinearRegression model score: ", str(round(score, 2) * 100), "%")
+print("LR train accuracy: ", str(round(regREST.score(xtrain, ytrain),2)*100), '%')
+print("LR test accuracy: ", str(round(regREST.score(xtest, ytest),2)*100), '%')
+print()
+
+# ----------------------------------------------------------------------------------------
 
 ###################################################
 # dummy this part out in case we don't want a second test, it's finnicky and has a few videos that did not trend
@@ -236,8 +260,8 @@ testReg = linear_model.LinearRegression()
 testReg = testReg.fit(xtrain2, ytrain2)
 pred2 = regREST.predict(xtest2)
 score2 = metrics.r2_score(ytest2, pred2)
-# again not accuracy ;-;
-print("score is %.2f" % score2)
+# printing out r2 score
+print("Scraped Videos LinearRegression R2Score is: %.2f" % score2)
 
 # testing 2 ends here
 #####################################
