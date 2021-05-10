@@ -269,7 +269,11 @@ print("Scraped Videos LinearRegression R2Score is: %.2f" % score2)
 xdum = xtest['std_views']
 xdum2 = xtrain['std_views']
 
-plt.figure(figsize=(4, 3))
+xTree = xtest['std_views']
+
+
+# Actual likes 
+plt.figure(figsize=(5, 4))
 ax = plt.axes()
 ax.scatter(xdum2, ytrain, color='black')
 plt.suptitle('Training Data\'s Likes')
@@ -279,7 +283,8 @@ ax.set_ylabel('y')
 ax.axis('tight')
 plt.show()
 
-plt.figure(figsize=(4, 3))
+# Prediction Linear Regression
+plt.figure(figsize=(5, 4))
 ax = plt.axes()
 ax.scatter(xdum, pred, color='blue')
 plt.suptitle('Predicted Likes')
@@ -291,16 +296,41 @@ plt.show()
 
 print("Score compares overall predicted to actual likes")
 
-plt.figure(figsize=(4, 3))
+# Comparison of Linear Regression Vs Actual
+plt.figure(figsize=(5, 4))
 ax = plt.axes()
 ax.scatter(xdum2, ytrain, color='black')
 ax.scatter(xdum, pred, color='blue')
-plt.suptitle('Compared')
+plt.suptitle('Linear Regression and Train')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 
 ax.axis('tight')
 plt.show()
+
+
+# Decision Tree predictions
+plt.figure(figsize=(5, 4))
+ax = plt.axes()
+ax.scatter(xTree, dePred, color='green')
+plt.suptitle('Decision Tree Predictions')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.axis('tight')
+plt.show()
+
+# Comparison of Decision Tree vs Actual
+plt.figure(figsize=(5, 4))
+ax = plt.axes()
+ax.scatter(xdum2, ytrain, color='black')
+ax.scatter(xTree, dePred, color='green')
+plt.suptitle('Decision Tree & Train')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+ax.axis('tight')
+plt.show()
+
 
 
 #ax.plot(pred, xdum)
