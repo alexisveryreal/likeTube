@@ -17,7 +17,6 @@ A machine learning model that predicts video likes based on the views
 ## Authors
 * **Alexis Villarreal** - [alexisveryreal](https://github.com/alexisveryreal)
 * **Ralph Benjamin Libao** - 
-* **Devon Erb** -
 * **Nicholaus Bloom** - [LintorZ](https://github.com/Lintorz)
 
 ## License
