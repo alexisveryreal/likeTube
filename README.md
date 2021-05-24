@@ -8,7 +8,7 @@
 
 # likeTube
 
-A work in progress, machine learning model that predicts video likes based on the views
+A machine learning model that predicts video likes based on the views
 
 ## Prerequisites
 
